@@ -1,13 +1,18 @@
-# Sample Hardhat Project
+# Axon protocol
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project is the source code of axon protocol which contains:
+- Smart contract logic
+- Frontend layout and logic
 
-Try running some of the following tasks:
-
+# To run the frontend
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+cd frontend
+npm install
+npm run dev
+```
+
+# To deploy smart contracts.
+```shell
+# on the root folder.
+npx hardhart run scripts/deploy.ts
 ```
