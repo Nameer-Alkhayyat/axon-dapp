@@ -13,6 +13,12 @@ contract CarbonToken is ERC20, ERC721Holder{
 
     IERC721 public nft;
 
+    uint256 public stakedTotal;
+    uint256 public stakingStartTime;
+    bool initRewards;
+
+
+
     mapping(uint256 => address) public tokenOwnerOf;
     mapping(uint256 => bool) public isStaked;
 
