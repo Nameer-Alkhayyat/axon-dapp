@@ -19,12 +19,12 @@ contract LandMangment is Ownable{
         uint256 created_at;
         // uint256 expires_at;
         uint256 CurrentRewards;
+        uint256 pastRewards;
     }
 
     constructor(){}
 
     mapping(address => LandData) public lands;
-    mapping(address => uint256) public pastRewards;
 
 
     function setLand  (
@@ -39,6 +39,7 @@ contract LandMangment is Ownable{
         _landData.approved = true;
         _landData.created_at = block.timestamp;
         _landData.CurrentRewards = 200;
+        _landData.pastRewards = 0;
         }
     
     function updateCurrentReward(address _assestHolder, uint256 _currentRewards) public{
@@ -53,7 +54,7 @@ contract LandMangment is Ownable{
         require(_landData.CurrentRewards > 0, "User Currently have no Carbon Credit Rewards, Oracle need to update user Current Rewards");
         // need an if statment. 
         uint256 _setPastRewards = _landData.CurrentRewards;
-        pastRewards[_assestHolder] = _setPastRewards;
+        _landData.pastRewards += _setPastRewards;
         _landData.CurrentRewards = 0;
 
     }
@@ -68,11 +69,12 @@ contract LandMangment is Ownable{
 
     }
     function claimPastRewards(address _assestHolder, uint256 amount) external returns(uint256){
-        uint256 _claimedPastRewards = getPastRewards(_assestHolder);
 
+        LandData storage _landData = lands[_assestHolder];
+        uint256 _claimedPastRewards = getPastRewards(_assestHolder);
         require(_claimedPastRewards > 0, "User Currently have no past Carbon Credit Rewards");
         require(_claimedPastRewards >= amount , "User have less Carbon Creidt than the desired amount.");
-        pastRewards[_assestHolder] -= amount;
+        _landData.pastRewards -= amount;
         return _claimedPastRewards;
 
     }
@@ -84,8 +86,8 @@ contract LandMangment is Ownable{
         
     }
     function getPastRewards(address _assestHolder) public view returns(uint256){
-
-    return pastRewards[_assestHolder];
+        LandData storage _landData = lands[_assestHolder];
+        return  _landData.pastRewards;
     
     }
 
