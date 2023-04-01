@@ -28,9 +28,9 @@ contract CarbonToken is ERC20, ERC721Holder{
 
 
 
-    constructor(address _nft) ERC20("AxonCarbonToken", "ACT"){
+    constructor() ERC20("AxonCarbonToken", "ACT"){
         owner = msg.sender;
-        nft = IERC721(_nft);
+        // nft = IERC721(_nft);
     }
 
     modifier _onlyOwner(){
@@ -38,10 +38,18 @@ contract CarbonToken is ERC20, ERC721Holder{
         _;
     }
 
-    function stake(uint256 tokenId) external {
-        nft.safeTransferFrom(msg.sender, address(this), tokenId);
+    function stake(address _sender, uint256 tokenId) internal {
+
+        nft.transferFrom(_sender, address(this), tokenId);
         tokenOwnerOf[tokenId] = msg.sender;
         isStaked[tokenId] = true;
+
+    }
+
+    function setMinterNFT(address _sender, address _nft, uint256 _tokenId) external{
+
+        nft = IERC721(_nft);
+        stake(_sender, _tokenId);
 
     }
 
@@ -50,39 +58,33 @@ contract CarbonToken is ERC20, ERC721Holder{
     //     return 200;
     // }
 
-    function unstake (uint256 tokenId) external {
-        require(tokenOwnerOf[tokenId] == msg.sender, "You are not the owner of this nft");
-        issueCarbonToken(msg.sender, 200);
-        nft.safeTransferFrom(address(this), msg.sender, tokenId);
-        delete tokenOwnerOf[tokenId];
-        delete isStaked[tokenId];
-    }
+    // function unstake (uint256 tokenId) external {
+    //     require(tokenOwnerOf[tokenId] == msg.sender, "You are not the owner of this nft");
+    //     issueCarbonToken(msg.sender, 200);
+    //     nft.safeTransferFrom(address(this), msg.sender, tokenId);
+    //     delete tokenOwnerOf[tokenId];
+    //     delete isStaked[tokenId];
+    // }
 
 
+    // function updateMaxSupply(uint256 cap_) public _onlyOwner {
+    //     require(cap_ > 0, "ERC20Capped: cap is 0");
+    //     _cap = cap_;
+    //     CurrentSupply = cap_;
+
+    // }
+    // function updateCurrentSupply(uint256 amount) private  {
+    //     CurrentSupply -= amount;
+    // }
 
 
-
-
-
-
-    function updateMaxSupply(uint256 cap_) public _onlyOwner {
-        require(cap_ > 0, "ERC20Capped: cap is 0");
-        _cap = cap_;
-        CurrentSupply = cap_;
-
-    }
-    function updateCurrentSupply(uint256 amount) private  {
-        CurrentSupply -= amount;
-    }
-
-
-    function issueCarbonToken(address _receiver, uint256 _amount) public {
-        require(_cap > 0, "Denied: Waiting for the Oracle to update the MaxSupply!");
-        require(ERC20.totalSupply() + _amount <= _cap, "ERC20Capped: cap exceeded");
-        _mint(_receiver, _amount);
-        updateCurrentSupply(_amount);
+    // function issueCarbonToken(address _receiver, uint256 _amount) public {
+    //     require(_cap > 0, "Denied: Waiting for the Oracle to update the MaxSupply!");
+    //     require(ERC20.totalSupply() + _amount <= _cap, "ERC20Capped: cap exceeded");
+    //     _mint(_receiver, _amount);
+    //     updateCurrentSupply(_amount);
         
-    }
+    // }
 
 
 }
