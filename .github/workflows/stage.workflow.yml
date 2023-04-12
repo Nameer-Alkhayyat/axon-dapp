@@ -1,0 +1,39 @@
+name: Deploy to GCloud Bucket
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Frontend/
+        run: cd frontend
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build React Application
+        run: npm run build
+
+      - name: Authenticate with GCloud
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
+        with:
+          project_id: axon-website-371813
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Upload Files to GCloud Bucket
+        run: |
+          gsutil -m rsync -r -d -c build gs://axon-frontend
+
+      # - name: Invalidate CDN Cache
+      #   uses: GoogleCloudPlatform/github-actions/invalidate-cdn-cache@main
+        with:
+          # distribution_id: <your-cloud-cdn-distribution-id>
+          path_pattern: "frontend/dist/index.html"
+
