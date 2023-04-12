@@ -36,7 +36,7 @@
 #         with:
 #           distribution_id: <your-cloud-cdn-distribution-id>
 #           path_pattern: "frontend/dist/index.html"
-
+name: Deploy to GCloud Bucket
 on:
   push:
     branches:
