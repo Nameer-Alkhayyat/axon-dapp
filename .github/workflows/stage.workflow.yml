@@ -43,9 +43,7 @@ on:
     - development
     paths:
     - frontend/dist/index.html
-  workflow_dispatch:
 
-name: Upload to GCS
 
 env:
   BUCKET_NAME: axon-frontend
