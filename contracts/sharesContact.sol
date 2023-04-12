@@ -16,6 +16,7 @@ contract sharesToken is ERC20, ERC721Holder{
     address public owner;
     uint256 public _totalSupply;
     uint256 remainingSupply;
+    address[] public owners;
 
 
     mapping(uint256 => address) public tokenOwnerOf;
@@ -65,6 +66,7 @@ contract sharesToken is ERC20, ERC721Holder{
         require(remainingSupply > 0, "no more share to mint");
         _mint(msg.sender, shares);
         remainingSupply -= shares;
+        owners.push(msg.sender);
         return true;
         
     }
@@ -72,9 +74,27 @@ contract sharesToken is ERC20, ERC721Holder{
     function _transferShares(address to, uint256 shares) public  returns (bool) {
         require(shares >= 10, "Shares: too small");
         require(balanceOf(msg.sender) >= shares, "Shares: too small");
-        transfer(to, shares);
-        return true;
+        if(balanceOf(msg.sender) == shares){
 
+            transfer(to, shares);
+            owners[msg.sender] = owners[owners.length -1];
+            owners.pop();
+            owners.push(to);
+            return true;
+        }
+        if(balanceOf(msg.sender) > shares){
+            transfer(to, shares);
+            owners.push(to);
+            return true;
+
+        }
+
+        
+    }
+
+
+    function getAllOwners() view external returns (owners[] memory) {
+        return owners;
         
     }
 
@@ -106,104 +126,104 @@ contract sharesToken is ERC20, ERC721Holder{
 
 
 
-// pragma solidity ^0.8.0;
+pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
-// import "./NFT.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./NFT.sol";
 
-// contract NFTShares is Ownable {
-//     struct NftShare {
-//         uint256 totalShares;
-//         uint256 remainingShares;
-//         uint256 pricePerShare;
-//         address[] owners;
-//         mapping(address => uint256) balances;
-//     }
+contract NFTShares is Ownable {
+    struct NftShare {
+        uint256 totalShares;
+        uint256 remainingShares;
+        uint256 pricePerShare;
+        address[] owners;
+        mapping(address => uint256) balances;
+    }
 
-//     NftShare private _nftShare;
-//     NFT private _nftContract;
+    NftShare private _nftShare;
+    NFT private _nftContract;
 
-//     event NftStaked(address indexed from, uint256 indexed tokenId, uint256 shares);
-//     event SharesBought(address indexed from, uint256 indexed tokenId, uint256 shares);
-//     event SharesSold(address indexed from, uint256 indexed tokenId, uint256 shares, uint256 totalPrice);
+    event NftStaked(address indexed from, uint256 indexed tokenId, uint256 shares);
+    event SharesBought(address indexed from, uint256 indexed tokenId, uint256 shares);
+    event SharesSold(address indexed from, uint256 indexed tokenId, uint256 shares, uint256 totalPrice);
 
-//     constructor(address nftContractAddress) {
-//         _nftContract = NFT(nftContractAddress);
-//     }
+    constructor(address nftContractAddress) {
+        _nftContract = NFT(nftContractAddress);
+    }
 
-//     function stake(uint256 tokenId, uint256 shares, uint256 pricePerShare) public {
-//         require(_nftShare.totalShares == 0, "NFTShares: only one NFT can be staked at a time");
-//         require(_nftContract.ownerOf(tokenId) == _msgSender(), "NFTShares: must own token");
-//         require(shares > 0, "NFTShares: must stake at least one share");
+    function stake(uint256 tokenId, uint256 shares, uint256 pricePerShare) public {
+        require(_nftShare.totalShares == 0, "NFTShares: only one NFT can be staked at a time");
+        require(_nftContract.ownerOf(tokenId) == _msgSender(), "NFTShares: must own token");
+        require(shares > 0, "NFTShares: must stake at least one share");
 
-//         _nftShare.totalShares = shares;
-//         _nftShare.remainingShares = shares;
-//         _nftShare.pricePerShare = pricePerShare;
-//         _nftShare.owners.push(_msgSender());
+        _nftShare.totalShares = shares;
+        _nftShare.remainingShares = shares;
+        _nftShare.pricePerShare = pricePerShare;
+        _nftShare.owners.push(_msgSender());
 
-//         _mintShares(shares);
+        _mintShares(shares);
 
-//         emit NftStaked(_msgSender(), tokenId, shares);
-//     }
+        emit NftStaked(_msgSender(), tokenId, shares);
+    }
 
-//     function buyShares(uint256 shares) public payable {
-//         require(_nftShare.remainingShares >= shares, "NFTShares: not enough shares remaining");
-//         require(msg.value == shares * _nftShare.pricePerShare, "NFTShares: invalid payment amount");
+    function buyShares(uint256 shares) public payable {
+        require(_nftShare.remainingShares >= shares, "NFTShares: not enough shares remaining");
+        require(msg.value == shares * _nftShare.pricePerShare, "NFTShares: invalid payment amount");
 
-//         _transferShares(_msgSender(), shares);
-//         _nftShare.remainingShares -= shares;
+        _transferShares(_msgSender(), shares);
+        _nftShare.remainingShares -= shares;
 
-//         emit SharesBought(_msgSender(), _nftContract.tokenOfOwnerByIndex(owner(), 0), shares);
-//     }
+        emit SharesBought(_msgSender(), _nftContract.tokenOfOwnerByIndex(owner(), 0), shares);
+    }
 
-//     function sellShares(uint256 shares, uint256 pricePerShare) public {
-//         require(_nftShare.balances[_msgSender()] >= shares, "NFTShares: not enough shares owned");
+    function sellShares(uint256 shares, uint256 pricePerShare) public {
+        require(_nftShare.balances[_msgSender()] >= shares, "NFTShares: not enough shares owned");
 
-//         _nftShare.pricePerShare = pricePerShare;
+        _nftShare.pricePerShare = pricePerShare;
 
-//         _transferShares(address(this), shares);
+        _transferShares(address(this), shares);
 
-//         emit SharesSold(_msgSender(), _nftContract.tokenOfOwnerByIndex(owner(), 0), shares, shares * pricePerShare);
-//     }
+        emit SharesSold(_msgSender(), _nftContract.tokenOfOwnerByIndex(owner(), 0), shares, shares * pricePerShare);
+    }
 
-//     function _mintShares(uint256 shares) private {
-//         ERC20 sharesToken = new ERC20("NFTSharesToken", "NFTS");
+    function _mintShares(uint256 shares) private {
+        ERC20 sharesToken = new ERC20("NFTSharesToken", "NFTS");
 
-//         for (uint256 i = 0; i < _nftShare.owners.length; i++) {
-//             address owner = _nftShare.owners[i];
-//             uint256 balance = (shares * _nftShare.balances[owner]) / _nftShare.totalShares;
-//             sharesToken.transfer(owner, balance);
-//             _nftShare.balances[owner] = balance;
-//         }
-//     }
+        for (uint256 i = 0; i < _nftShare.owners.length; i++) {
+            address owner = _nftShare.owners[i];
+            uint256 balance = (shares * _nftShare.balances[owner]) / _nftShare.totalShares;
+            sharesToken.transfer(owner, balance);
+            _nftShare.balances[owner] = balance;
+        }
+    }
 
-//     function _transferShares(address to, uint256 shares) private {
-//         ERC20 sharesToken = ERC20(address(this));
-//         uint256 balance = sharesToken.balanceOf(_msgSender());
-//         require(balance >= shares, "NFTShares: not enough shares owned");
+    function _transferShares(address to, uint256 shares) private {
+        ERC20 sharesToken = ERC20(address(this));
+        uint256 balance = sharesToken.balanceOf(_msgSender());
+        require(balance >= shares, "NFTShares: not enough shares owned");
 
-//         sharesToken.transferFrom(_msgSender(), to, shares);
+        sharesToken.transferFrom(_msgSender(), to, shares);
 
-//         uint256 remainingBalance = sharesToken.balanceOf(_msgSender());
-//         uint256 newBalance = _nftShare.totalShares - _nftShare.remainingShares;
-//         _nftShare.balances[_msgSender()] = (newBalance * remainingBalance) / _nftShare.remainingShares;
-//         _nftShare.balances[to] += shares;
+        uint256 remainingBalance = sharesToken.balanceOf(_msgSender());
+        uint256 newBalance = _nftShare.totalShares - _nftShare.remainingShares;
+        _nftShare.balances[_msgSender()] = (newBalance * remainingBalance) / _nftShare.remainingShares;
+        _nftShare.balances[to] += shares;
 
-//         if (_nftShare.balances[_msgSender()] == 0) {
-//             for (uint256 i = 0; i < _nftShare.owners.length; i++) {
-//                 if (_nftShare.owners[i] == _msgSender()) {
-//                     _nftShare.owners[i] = _nftShare.owners[_nftShare.owners.length - 1];
-//                     _nftShare.owners.pop();
-//                     break;
-//                 }
-//             }
-//         }
+        if (_nftShare.balances[_msgSender()] == 0) {
+            for (uint256 i = 0; i < _nftShare.owners.length; i++) {
+                if (_nftShare.owners[i] == _msgSender()) {
+                    _nftShare.owners[i] = _nftShare.owners[_nftShare.owners.length - 1];
+                    _nftShare.owners.pop();
+                    break;
+                }
+            }
+        }
 
-//         if (_nftShare.balances[to] == shares) {
-//             _nftShare.owners.push(to);
-//     }
-// }
+        if (_nftShare.balances[to] == shares) {
+            _nftShare.owners.push(to);
+    }
+}
 
     
-//     }
+    }
