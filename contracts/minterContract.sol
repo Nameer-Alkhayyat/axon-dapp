@@ -28,7 +28,6 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     uint256 public price = 0 ether;
 
     bool  public shareContractExsist = false;
-    uint256 constant maxSupply = 1;
     uint256 public numberOfShares;
 
     uint256 public currentSupply;

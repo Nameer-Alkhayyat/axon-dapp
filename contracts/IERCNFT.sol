@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 interface IERCNFT is IERC721  {
 
+    
     function mintToken(string memory tokenURI )  external returns(uint256);
 
     // function to update oracle address by Axon
