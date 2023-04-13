@@ -25,7 +25,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     address private sharesContracAddress;
     address private Oracle;
     address landOwner;
-    uint256 public price;
+    uint256 public price = 0 ether;
 
     bool  public shareContractExsist = false;
     uint256 constant maxSupply = 1;
@@ -161,31 +161,6 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
         
     }
 
-
-
-
-    // define a brige to the teasuery to transfer money or not, based on the project State.
-
-
-
-
-
-
-
-//    function _beforeTokenTransfer(
-//         address from,
-//         address to,
-//         uint256 tokenId
-//     ) internal virtual override {
-//         super._beforeTokenTransfer(from, to, tokenId,1);
-
-//         require(to == sharesContracAddress, "Revert:Unknown address");
-
-//         uri = tokenId;
-//         // do stuff before every transfer
-//         // e.g. check that vote (other than when minted) 
-//         // being transferred to registered candidate
-//     }
 
 }
 
