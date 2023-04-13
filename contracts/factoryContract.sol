@@ -6,6 +6,7 @@ import "./creditContract.sol";
 import "./minterContract.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
 contract ContractFactory  is Ownable{
     struct ContractInfo {
         address sharesToken;

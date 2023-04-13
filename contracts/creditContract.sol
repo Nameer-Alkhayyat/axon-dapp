@@ -1,10 +1,10 @@
-
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
+
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -17,9 +17,6 @@ contract creditContract is ERC20, ERC721Holder{
 
     IERCNFT public nft;
     address public nftAddress;
-    bool initRewards = false;
-    uint256 created_at;
-    uint256 expire_at;
     IERCToken public sharesContract;
 
     uint256 public _cap;
@@ -29,12 +26,9 @@ contract creditContract is ERC20, ERC721Holder{
     address owner;
     uint256 public lastCalled;
 
-    struct UserEntry {
-        address user;
-        uint256 timestamp;
-    }
 
-    UserEntry[] public userEntries;
+
+    address [] userEntries;
 
 
 
@@ -77,34 +71,29 @@ contract creditContract is ERC20, ERC721Holder{
     event BurnCreditsInternal(address indexed to, uint256 amount);
 
 
-    function updateCurrentSupply(uint256 amount) external   _oncePerYear  {
+    function updateCurrentSupply(uint256 _amount) external   _oncePerYear  {
 
         if(_currentSupply > 0){
-
-            burnCreditsInternal(owner, _currentSupply);
-            _mint(address(this), amount);
+            _transfer(address(this), owner, _amount);
+            _burn(owner, _amount);
+            emit BurnCreditsInternal(owner, _amount);
+            _mint(address(this), _amount);
             delete userEntries;
 
         }else{
-            _mint(address(this), amount);
+            _mint(address(this), _amount);
 
         }
 
         _capProgress += _currentSupply;
-        _currentSupply = amount;
-        _fixedCurrentSupply = amount;
-        emit UpdatedCurrentSupply(amount, block.timestamp);
+        _currentSupply = _amount;
+        _fixedCurrentSupply = _amount;
+        emit UpdatedCurrentSupply(_amount, block.timestamp);
 
 
     }
 
-    function burnCreditsInternal(address _to, uint256 _amount) internal  _openCap {
 
-        _transfer(address(this), _to, _amount);
-        _burn(_to, _amount);
-        emit BurnCreditsInternal(_to, _amount);
-        
-    }
 
     function burnCreditsPublic() public _openCap() {
         uint256 balance = sharesContract.balanceOf(msg.sender);
@@ -115,7 +104,7 @@ contract creditContract is ERC20, ERC721Holder{
 
         _transfer(address(this), msg.sender, creditsRewards);
         _burn(msg.sender, creditsRewards);
-        storeUserTimestamp();
+        userEntries.push(msg.sender);
         _currentSupply -= creditsRewards;
 
         emit BurnCreditsPublic(msg.sender, creditsRewards, balance);
@@ -128,18 +117,11 @@ contract creditContract is ERC20, ERC721Holder{
         return creditsRewards;
     }
 
-    function storeUserTimestamp() internal {
-        UserEntry memory newUserEntry = UserEntry({
-            user: msg.sender,
-            timestamp: block.timestamp
-        });
 
-        userEntries.push(newUserEntry);
-    }
 
     function DoesUserExist(address _user) public view returns (bool) {
         for (uint256 i = 0; i < userEntries.length; i++) {
-            if (userEntries[i].user == _user) {
+            if (userEntries[i] == _user) {
                 return true;
             }
         }

@@ -47,7 +47,6 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
         Oracle = _oracle;
         sharesContract = IERCToken(_sharesAddress);
         shareContractExsist = true;
-
         price = _price;
     }
 
