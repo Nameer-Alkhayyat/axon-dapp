@@ -42,12 +42,12 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     mapping(address => uint256) lastCalled;
     uint256 timeInterval = 1 hours;
 
-    constructor(address _landOnwer, address _sharesAddress, address _oracle, uint256 _shares, uint256 _price)ERC721("DE-NFT", "DENFT"){
+    constructor(address _landOnwer, address _sharesAddress, address _oracle, uint256 _price, string memory _tokenName, string memory _tokenSymbol )ERC721(_tokenName, _tokenSymbol){
         landOwner = _landOnwer;
         Oracle = _oracle;
         sharesContract = IERCToken(_sharesAddress);
         shareContractExsist = true;
-        numberOfShares = _shares;
+
         price = _price;
     }
 
@@ -71,9 +71,12 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
 
 
-    function mintToken(string memory tokenURI ) _onlyLandOwner _checkState(projectState.initated) external returns(uint256) {
+    function mintToken(string memory tokenURI,  uint256 _shares ) _onlyLandOwner _checkState(projectState.initated) external returns(uint256) {
         require(shareContractExsist, "Shares contract is still yet to be deployed");
         require(_tokenIds.current() == 0, "Max supply had been reached.");
+        numberOfShares = _shares;
+
+        
         
         _tokenIds.increment();
         uint256 tokenId = _tokenIds.current();
