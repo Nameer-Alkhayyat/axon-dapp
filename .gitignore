@@ -28,3 +28,4 @@ dist-ssr
 test.sol
 staking.sol
 ex-contract
+typechain-types

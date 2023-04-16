@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IERCNFT.sol";
+import "hardhat/console.sol";
 
 
 
@@ -32,15 +33,16 @@ contract sharesToken is ERC20, ERC721Holder{
     }
 
     function stake(address _sender, uint256 tokenId) internal {
-
-        nft.transferFrom(_sender, address(this), tokenId);
+        console.log("this is a sender", msg.sender);
+        console.log("this is another sender", _sender);
+        nft.safeTransferFrom(_sender, address(this), tokenId);
         tokenOwnerOf[tokenId] = msg.sender;
         isStaked[tokenId] = true;
 
     }
 
     function setMinterNFT(address _sender, address _nft, uint256 _tokenId) external{
-
+        console.log("this is a sender", msg.sender);
         nft = IERCNFT(_nft);
         nftAddress = _nft;
         stake(_sender, _tokenId);
@@ -61,11 +63,12 @@ contract sharesToken is ERC20, ERC721Holder{
     }
 
     function buyShares(uint256 shares) public payable returns (bool) {
+        console.log("valuueueue",msg.value);
         require(shares >= 10, "Shares: too small");
         require(remainingSupply > 0, "no more share to mint");
-        require(getPrice() <= msg.value, "You don't have enough Eth");
+        require(getPrice(shares) <= msg.value, "You don't have enough Eth");
         _mint(msg.sender, shares);
-        payable(nftAddress).transfer(msg.value);
+        // payable(nftAddress).transfer(msg.value);
         remainingSupply -= shares;
         return true;
         
@@ -79,14 +82,6 @@ contract sharesToken is ERC20, ERC721Holder{
         
     }
 
-
-
-
-
-
-
-
-
     
     // function to figuer out the payable situation 
     // function to get the total amount of share from the
@@ -98,11 +93,11 @@ contract sharesToken is ERC20, ERC721Holder{
     }
 
     // function to get the tolatal price of the NFT and calculate the price of the share.
-    function getPrice() view public returns (uint256) {
+    function getPrice(uint256 _amount) view public returns (uint256) {
 
         uint256 projectPrice = nft.getPrice();
         uint256 pricePerShare = projectPrice/ _totalSupply;
-        return pricePerShare;
+        return pricePerShare * _amount;
         
     }
 

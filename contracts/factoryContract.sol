@@ -33,9 +33,6 @@ contract ContractFactory  is Ownable{
         sharesToken st = new sharesToken();
         contracts[contractId].sharesToken = address(st);
 
-        // Deploy creditContract contract
-        creditContract cc = new creditContract(address(st), _cap);
-        contracts[contractId].creditContract = address(cc);
 
         // Deploy nftMinterContract contract
         nftMinterContract nmc =
@@ -48,6 +45,12 @@ contract ContractFactory  is Ownable{
                 _nftSymbol
             );
         contracts[contractId].nftMinterContract = address(nmc);
+
+        // Deploy creditContract contract
+        CreditContract cc = new CreditContract(address(st), address(nmc), _cap);
+        contracts[contractId].creditContract = address(cc);
+
+
         emit InstanceDeployed(contractId, _nftName, address(st), address(cc), address(nmc));
         return contractId;
     }

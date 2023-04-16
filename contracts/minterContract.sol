@@ -6,9 +6,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IERCToken.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
-
+// import "./IERCCredit.sol";
+import "hardhat/console.sol";
 contract nftMinterContract is ERC721URIStorage, Ownable{
 
     enum  projectState {
@@ -20,7 +19,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     }
     projectState public state = projectState.initated;
 
-
+    // IERCCredit public creditContract;
     IERCToken public sharesContract;
     address private sharesContracAddress;
     address private Oracle;
@@ -28,6 +27,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     uint256 public price = 0 ether;
 
     bool  public shareContractExsist = false;
+
     uint256 public numberOfShares;
 
     uint256 public currentSupply;
@@ -45,8 +45,12 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
         landOwner = _landOnwer;
         Oracle = _oracle;
         sharesContract = IERCToken(_sharesAddress);
+        // creditContract = IERCCredit(_creditContract);
+        sharesContracAddress = _sharesAddress;
         shareContractExsist = true;
         price = _price;
+
+      
     }
 
 
@@ -68,12 +72,13 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     event oracleUpdateErorr(uint256 _amount, address _oracle, uint _time);
 
 
-
     function mintToken(string memory tokenURI,  uint256 _shares ) _onlyLandOwner _checkState(projectState.initated) external returns(uint256) {
+        console.log("this is a sender", msg.sender);
         require(shareContractExsist, "Shares contract is still yet to be deployed");
         require(_tokenIds.current() == 0, "Max supply had been reached.");
         numberOfShares = _shares;
 
+        setApprovalForAll(sharesContracAddress, true);
         
         
         _tokenIds.increment();
@@ -86,7 +91,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
 
     function stakeNFT(address _sender,  uint256 _tokenId) internal {
-   
+        console.log("this is a sender", msg.sender);
         sharesContract.setMinterNFT(_sender, address(this), _tokenId);
 
     }
@@ -115,6 +120,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
             currentSupply = _amount;
             lastCalled[msg.sender] = block.timestamp;
+            // creditContract.updateCurrentSupply(_amount);
             return true;
         }
    
@@ -132,12 +138,12 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
     // function to update the current NFT price.
 
-    function updateCurrentPrice( uint256 _price) external onlyOwner _checkState(projectState.allOk){
-        // some calulation
-        price = _price;
+    // function updateCurrentPrice( uint256 _price) external onlyOwner _checkState(projectState.allOk){
+    //     // some calulation
+    //     price = _price;
 
         
-    }
+    // }
 
     // function to update the project state after investigation by Axon
     function setStateOk() public onlyOwner {

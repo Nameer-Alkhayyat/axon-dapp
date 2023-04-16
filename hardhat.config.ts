@@ -4,15 +4,20 @@ import "hardhat-gas-reporter"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
-  defaultNetwork: "ganache",
+  defaultNetwork: "hardhat",
   gasReporter:{
     enabled:true
 
   },
   networks: {
+    hardhat:{
+      gas:12000000 
+
+    },
     ganache:{
       url:"http://127.0.0.1:7545",
-      accounts: ["ab546bab82afe3e81d89db7a5b5981bda8558683e7b7d0fae2a191cdfc3b0c64"]
+      accounts: ["ab546bab82afe3e81d89db7a5b5981bda8558683e7b7d0fae2a191cdfc3b0c64"],
+      gas:90000000 
 
     },
     goerli:{
