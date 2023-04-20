@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IERCToken.sol";
 // import "./IERCCredit.sol";
-import "hardhat/console.sol";
+
 contract nftMinterContract is ERC721URIStorage, Ownable{
 
     enum  projectState {
@@ -73,7 +73,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
 
     function mintToken(string memory tokenURI,  uint256 _shares ) _onlyLandOwner _checkState(projectState.initated) external returns(uint256) {
-        console.log("this is a sender", msg.sender);
+
         require(shareContractExsist, "Shares contract is still yet to be deployed");
         require(_tokenIds.current() == 0, "Max supply had been reached.");
         numberOfShares = _shares;
@@ -91,7 +91,7 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
 
 
     function stakeNFT(address _sender,  uint256 _tokenId) internal {
-        console.log("this is a sender", msg.sender);
+
         sharesContract.setMinterNFT(_sender, address(this), _tokenId);
 
     }

@@ -2,6 +2,7 @@
   "name": "hardhat-project",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@types/jest": "^29.5.0",
     "hardhat": "^2.12.7",
     "hardhat-contract-sizer": "^2.8.0",
