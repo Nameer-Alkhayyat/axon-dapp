@@ -74,7 +74,7 @@ contract sharesToken is ERC20, ERC721Holder{
         
     }
 
-    function _transferShares(address to, uint256 shares) public  returns (bool) {
+    function transferShares(address to, uint256 shares) public  returns (bool) {
         require(shares >= 10, "Shares: too small");
         require(balanceOf(msg.sender) >= shares, "Shares: too small");
         transfer(to, shares);
@@ -88,14 +88,14 @@ contract sharesToken is ERC20, ERC721Holder{
     
     function getShares() view public returns (uint256) {
 
-       return  nft.getShares();
+       return  nft.numberOfShares();
         
     }
 
     // function to get the tolatal price of the NFT and calculate the price of the share.
     function getPrice(uint256 _amount) view public returns (uint256) {
 
-        uint256 projectPrice = nft.getPrice();
+        uint256 projectPrice = nft.price();
         uint256 pricePerShare = projectPrice/ _totalSupply;
         return pricePerShare * _amount;
         

@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-interface IERCCredit {
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface IERCCredit  is IERC20 {
 
-    event UpdatedCurrentSupply(uint256 amount, uint256 time);
-    event BurnCreditsPublic(address indexed user, uint256 amount, uint256 sharesBalance);
-    event BurnCreditsInternal(address indexed to, uint256 amount);
 
     function updateCurrentSupply(uint256 amount) external;
     function burnCreditsPublic() external;

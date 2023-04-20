@@ -1,6 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-gas-reporter"
+import "hardhat-contract-sizer"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
@@ -9,6 +10,10 @@ const config: HardhatUserConfig = {
     enabled:true
 
   },
+  // contractSizer: {
+
+
+  // },
   networks: {
     hardhat:{
       gas:12000000 

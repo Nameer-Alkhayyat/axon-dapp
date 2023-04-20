@@ -159,14 +159,6 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
         state = projectState.paused;   
     }
 
-    function getShares() external view returns (uint256) {
-        return numberOfShares;
-        
-    }
-    function getPrice() external view returns (uint256) {
-        return price;
-        
-    }
 
 
 }

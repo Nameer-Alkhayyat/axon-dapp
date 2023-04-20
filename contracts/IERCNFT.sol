@@ -6,26 +6,14 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 
 interface IERCNFT is IERC721  {
-
-    
-    function mintToken(string memory tokenURI )  external returns(uint256);
-
-    // function to update oracle address by Axon
-
-    function updateOracleAddress(address _oracle ) external;
-
-
-    // functio to update yearly actualCarbonCredit by Oracle
-
-    function updateCurrentSupply(uint256 _amount) external returns(bool);
-
-    // functio to update yearly maxCarbonCredit and minCarbonCredit by Oracle
-
+    function numberOfShares() external view returns(uint256);
+    function price()external view returns(uint256);
+    function mintToken(string calldata tokenURI, uint256 _shares) external returns (uint256);
+    function updateOracleAddress(address _oracle) external;
+    function updateCurrentSupply(uint256 _amount) external returns (bool);
     function updateCarbonEstimation(uint256 _min, uint256 _max) external;
-
-
-
-    function getShares() external view returns (uint256);
-    function getPrice() external view returns (uint256);
-    
+    function setStateOk() external;
+    function setStateNaturalDisaster() external;
+    function setStateLandOwnerIssue() external;
+    function setStatePaused() external;
 }
