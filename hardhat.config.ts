@@ -10,10 +10,11 @@ const config: HardhatUserConfig = {
     enabled:true
 
   },
-  // contractSizer: {
+  contractSizer: {
+    outputFile:"./contractSize.txt"
 
 
-  // },
+  },
   networks: {
     hardhat:{
       gas:12000000 
