@@ -4,6 +4,8 @@ import "hardhat-gas-reporter"
 import "hardhat-contract-sizer"
 import "@nomiclabs/hardhat-etherscan"
 
+require('dotenv').config()
+
 const config: HardhatUserConfig = {
   solidity:{
     version:"0.8.17",
@@ -28,20 +30,31 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat:{
-      gas:12000000 
+
 
     },
     ganache:{
       url:"http://127.0.0.1:7545",
-      accounts: ["ab546bab82afe3e81d89db7a5b5981bda8558683e7b7d0fae2a191cdfc3b0c64"],
-      gas:90000000 
+      accounts: [process.env.PRIVATE_KEY],
+
 
     },
     goerli:{
-      url:"https://eth-goerli.g.alchemy.com/v2/R66oFy_NdfMhLFYi1zN62n8FqA8SlHf1",
-      accounts:["69b15d7aa34c94353162a876a3a1c0c47319db3bb89ae4034d902a448ec7fc4e"]
+      url:process.env.goerli_url,
+      accounts:[process.env.PRIVATE_KEY]
+    },
+    sepolia:{
+      url:"https://eth-sepolia.g.alchemy.com/v2/l5za7P6ehUtAsR5PH7OcZkbml76iLKG4",
+      accounts:[[process.env.PRIVATE_KEY]]
     }
-}
+},
+  etherscan:{
+    apiKey:{
+      goerli: process.env.API_KEY
+
+    }
+
+  }
 };
 
 export default config;
