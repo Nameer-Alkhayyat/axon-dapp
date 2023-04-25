@@ -27,13 +27,13 @@ describe("sharesContract", function(){
         [axon, landOwner, oracle, user1, user2] = await ethers.getSigners()
 
 
-        const Shares = await ethers.getContractFactory("sharesToken")
+        const Shares = await ethers.getContractFactory("sharesContract")
         shares = await Shares.deploy()
         await shares.deployed()
 
         
 
-        const Minter = await ethers.getContractFactory("nftMinterContract")
+        const Minter = await ethers.getContractFactory("minterContract")
         minter = await Minter.deploy(landOwner.address,  shares.address, oracle.address, 100, "testNFT", "tnft")
         await minter.deployed()
         minterAdress = minter.address
@@ -68,7 +68,7 @@ describe("sharesContract", function(){
       });
 
     it("should check setMinterNFT function", async () => {
-        const minterAddress = await shares.nftAddress();
+        const minterAddress = await shares.minterAddress();
 
         expect(minterAddress).to.eq(minter.address)
       });

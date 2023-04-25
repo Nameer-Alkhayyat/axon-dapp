@@ -43,10 +43,10 @@ const config: HardhatUserConfig = {
       url:process.env.goerli_url,
       accounts:[process.env.PRIVATE_KEY]
     },
-    sepolia:{
-      url:"https://eth-sepolia.g.alchemy.com/v2/l5za7P6ehUtAsR5PH7OcZkbml76iLKG4",
-      accounts:[[process.env.PRIVATE_KEY]]
-    }
+    // sepolia:{
+    //   url:"https://eth-sepolia.g.alchemy.com/v2/l5za7P6ehUtAsR5PH7OcZkbml76iLKG4",
+    //   accounts:[[process.env.PRIVATE_KEY]]
+    // }
 },
   etherscan:{
     apiKey:{

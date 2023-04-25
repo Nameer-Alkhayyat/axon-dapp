@@ -6,14 +6,14 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "./IERCNFT.sol";
+import "./IMinter.sol";
 
 
 
-contract sharesToken is ERC20, ERC721Holder{
+contract sharesContract is ERC20, ERC721Holder{
 
-    IERCNFT public nft;
-    address public nftAddress;
+    IMinter public minterContract;
+    address public minterAddress;
     address public owner;
     uint256 public _totalSupply;
     uint256 remainingSupply;
@@ -32,7 +32,7 @@ contract sharesToken is ERC20, ERC721Holder{
     }
 
     function stake(address _sender, uint256 tokenId) internal {
-        nft.safeTransferFrom(_sender, address(this), tokenId);
+        minterContract.safeTransferFrom(_sender, address(this), tokenId);
         tokenOwnerOf[tokenId] = msg.sender;
         isStaked[tokenId] = true;
 
@@ -40,8 +40,8 @@ contract sharesToken is ERC20, ERC721Holder{
 
     function setMinterNFT(address _sender, address _nft, uint256 _tokenId) external{
 
-        nft = IERCNFT(_nft);
-        nftAddress = _nft;
+        minterContract = IMinter(_nft);
+        minterAddress = _nft;
         stake(_sender, _tokenId);
         setTotalSupply();
 
@@ -51,7 +51,7 @@ contract sharesToken is ERC20, ERC721Holder{
 
     // function to mint the share as erc20 and transfer them to the buyer
     function setTotalSupply() internal {
-       uint256 _maxSupply = nft.numberOfShares() * 10;
+       uint256 _maxSupply = minterContract.numberOfShares() * 10;
        _totalSupply = _maxSupply;
        remainingSupply = _maxSupply;
         
@@ -64,7 +64,7 @@ contract sharesToken is ERC20, ERC721Holder{
         require(remainingSupply > 0, "no more share to mint");
         require(getPrice(shares) <= msg.value, "You don't have enough Eth");
         _mint(msg.sender, shares);
-        // payable(nftAddress).transfer(msg.value);
+        // payable(minterAddress).transfer(msg.value);
         remainingSupply -= shares;
         return true;
         
@@ -85,7 +85,7 @@ contract sharesToken is ERC20, ERC721Holder{
     // function to get the tolatal price of the NFT and calculate the price of the share.
     function getPrice(uint256 _amount) view public returns (uint256) {
 
-        uint256 pricePerShare = nft.price()/ _totalSupply;
+        uint256 pricePerShare = minterContract.price()/ _totalSupply;
         return pricePerShare * _amount;
         
     }

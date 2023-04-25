@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 
 
-interface IERCNFT is IERC721  {
+interface IMinter is IERC721  {
     function numberOfShares() external view returns(uint256);
     function price()external view returns(uint256);
     function mintToken(string calldata tokenURI, uint256 _shares) external returns (uint256);

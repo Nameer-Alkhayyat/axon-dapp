@@ -5,10 +5,10 @@ pragma solidity  ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./IERCToken.sol";
-// import "./IERCCredit.sol";
+import "./IShares.sol";
+// import "./ICredit.sol";
 
-contract nftMinterContract is ERC721URIStorage, Ownable{
+contract minterContract is ERC721URIStorage, Ownable{
 
     enum  projectState {
         initated,
@@ -19,8 +19,8 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     }
     projectState public state = projectState.initated;
 
-    // IERCCredit public creditContract;
-    IERCToken public sharesContract;
+    // ICredit public creditContract;
+    IShares public sharesContract;
     address private sharesContracAddress;
     address private Oracle;
     address landOwner;
@@ -44,8 +44,8 @@ contract nftMinterContract is ERC721URIStorage, Ownable{
     constructor(address _landOnwer, address _sharesAddress, address _oracle, uint256 _price, string memory _tokenName, string memory _tokenSymbol )ERC721(_tokenName, _tokenSymbol){
         landOwner = _landOnwer;
         Oracle = _oracle;
-        sharesContract = IERCToken(_sharesAddress);
-        // creditContract = IERCCredit(_creditContract);
+        sharesContract = IShares(_sharesAddress);
+        // creditContract = ICredit(_creditContract);
         sharesContracAddress = _sharesAddress;
         shareContractExsist = true;
         price = _price;

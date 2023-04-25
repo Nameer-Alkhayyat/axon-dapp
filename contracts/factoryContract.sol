@@ -9,14 +9,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract factoryContract  is Ownable{
     struct ContractInfo {
-        address sharesToken;
+        address sharesContract;
         address creditContract;
-        address nftMinterContract;
+        address minterContract;
     }
 
     mapping(bytes32 => ContractInfo) public contracts;
 
-    event InstanceDeployed(bytes32 contractId, string nftName, address sharesTokenAddress, address creditContractAddress, address nftMinterContractAddress);
+    event InstanceDeployed(bytes32 contractId, string nftName, address sharesContractAddress, address creditContractAddress, address minterContractAddress);
     
     function createContracts (
         string memory _nftName,
@@ -27,16 +27,16 @@ contract factoryContract  is Ownable{
         address _landOwnerAddress
     ) external onlyOwner returns (bytes32)  {
         bytes32 contractId = keccak256(abi.encodePacked(_nftName, _nftSymbol));
-        require( contracts[contractId].sharesToken == address(0), "Contracts already deployed");
+        require( contracts[contractId].sharesContract == address(0), "Contracts already deployed");
 
-        // Deploy sharesToken contract
-        sharesToken st = new sharesToken();
-        contracts[contractId].sharesToken = address(st);
+        // Deploy sharesContract contract
+        sharesContract st = new sharesContract();
+        contracts[contractId].sharesContract = address(st);
 
 
-        // Deploy nftMinterContract contract
-        nftMinterContract nmc =
-            new nftMinterContract(
+        // Deploy minterContract contract
+        minterContract nmc =
+            new minterContract(
                 address(_landOwnerAddress),
                 address(st),
                 address(_oracle),
@@ -44,7 +44,7 @@ contract factoryContract  is Ownable{
                 _nftName,
                 _nftSymbol
             );
-        contracts[contractId].nftMinterContract = address(nmc);
+        contracts[contractId].minterContract = address(nmc);
 
         // Deploy creditContract contract
         CreditContract cc = new CreditContract(address(st), address(nmc), _cap);

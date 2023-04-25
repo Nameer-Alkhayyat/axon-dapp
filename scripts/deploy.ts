@@ -34,14 +34,14 @@ async function main() {
 //   console.log("Contracts created with ID:", contractId);
 
 //   const contracts = await factory.contracts(contractId);
-//   console.log("SharesToken address:", contracts.sharesToken);
+//   console.log("sharesContract address:", contracts.sharesContract);
 //   console.log("CreditContract address:", contracts.creditContract);
-//   console.log("NFTMinterContract address:", contracts.nftMinterContract);
+//   console.log("minterContract address:", contracts.minterContract);
 //   fs.writeFileSync('./contracts-addres.tsx', `
 //   export const factoryContract = "${factory.address}"
-//   export const SharesToken = "${ contracts.sharesToken}"
+//   export const sharesContract = "${ contracts.sharesContract}"
 //   export const CreditContract = "${ contracts.creditContract}"
-//   export const NFTMinterContract = "${contracts.nftMinterContract}"
+//   export const minterContract = "${contracts.minterContract}"
 //   `)
 // }
 

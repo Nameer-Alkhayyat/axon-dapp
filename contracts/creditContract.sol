@@ -2,13 +2,13 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./IERCNFT.sol";
-import "./IERCToken.sol";
+import "./IMinter.sol";
+import "./IShares.sol";
 
 contract CreditContract is ERC20 {
     // state variables
-    IERCNFT public nft;
-    IERCToken public sharesContract;
+    IMinter public nft;
+    IShares public sharesContract;
     address public nftAddress;
     address public owner;
     address[] private userEntries;
@@ -27,7 +27,7 @@ contract CreditContract is ERC20 {
     constructor(address sharesAddress, address _nftAdress, uint256 _cap) ERC20("AxonCarbonToken", "ACT") {
         owner = msg.sender;
         lastCalled = 0;
-        sharesContract = IERCToken(sharesAddress);
+        sharesContract = IShares(sharesAddress);
         nftAddress = _nftAdress;
         cap = _cap;
     }

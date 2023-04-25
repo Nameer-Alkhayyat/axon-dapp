@@ -29,9 +29,10 @@ test.sol
 staking.sol
 ex-contract
 typechain-types
-classDiagram.svg
-squeD.png
+
+
 .env
 contracts-addres.tsx
 .gitignore
 contracts-addres2.tsx
+s.uml
