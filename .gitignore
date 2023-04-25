@@ -31,8 +31,19 @@ ex-contract
 typechain-types
 
 
-.env
+
+
+
+
+
+
+
+
+squeD.png
+
 contracts-addres.tsx
-.gitignore
+
 contracts-addres2.tsx
+classDiagram.svg
+.env
 s.uml
