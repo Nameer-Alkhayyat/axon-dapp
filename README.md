@@ -55,6 +55,7 @@ The follwing command will depoly the Factory Contract on Hardhat local node.
 ---
 ```bash  
 npx hardhat run scripts/deploy.ts
+  # The above command will also create a factoryContractAddress.tsx file where are the newly created Factory contract addresses will be saved.
  ```
 
  #### 2.Custome Network :
@@ -67,13 +68,20 @@ The follwing command will depoly the Factory Contract on a remote network of you
 
  ```bash
   npx hardhat run scripts/deploy.ts --network NETWORKNAME 
+
+  # The above command will also create a factoryContractAddress.tsx file where the newly created Factory contract addresses will be saved.
   ```
+
+
 To create an instance of minterContract, sharesContract and creditContract from the factoryContract, run the following:
+
+> Make sure to copy the factory Contract Address from factoryContractAddress.tsx file, in the root folder, to your .env file.
+
 
  ```bash
   npx hardhat run scripts/createContracts.ts
 
-  # The above command will create a text file where are the new created contract addresses and projectId will be saved.
+  # The above command will aslo contracts-addresses.tsx file where are the new created contract addresses and projectId will be saved.
   ```
 
 

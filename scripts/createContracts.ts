@@ -1,11 +1,13 @@
 import { ethers, Contract, Bytes} from "ethers";
 import fs from 'fs';
 require('dotenv').config()
+
+
+
 const API_KEY = process.env.API_KEY
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const API_URL = process.env.goerli_url
-const CONTRACT_ADDRESS = "0x56FD53c52308453Ee47f24aC374d1024bbBA56c0"
-
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 const contract = require("../artifacts/contracts/factoryContract.sol/factoryContract.json");
 
 
@@ -20,6 +22,9 @@ const landOwnerAddress = "0x952812337710365489314BdE12Db4764e4770560"; // Replac
 
 async function delployContractsInstances() {
 
+
+
+
     const alchemyProvider = new ethers.providers.AlchemyProvider("goerli", API_KEY);
     const signer = new ethers.Wallet(PRIVATE_KEY, alchemyProvider);
     const factory = new ethers.Contract(CONTRACT_ADDRESS, contract.abi, signer);  
@@ -32,17 +37,15 @@ async function delployContractsInstances() {
   
     const event = receipt.events.find((event: { event: string; }) => event.event =="InstanceDeployed")
   
-    const contractId = event.args.contractId;
-    console.log("Contracts created with ID:", contractId);
+    const projectId = event.args.contractId;
+    console.log("Contracts created with ID:", projectId);
   
-    const contracts = await factory.contracts(contractId);
+    const contracts = await factory.contracts(projectId);
     console.log("sharesContract address:", contracts.sharesContract);
     console.log("CreditContract address:", contracts.creditContract);
     console.log("minterContract address:", contracts.minterContract);
-    fs.writeFileSync('./contracts-addres2.tsx', `
-    export const factoryContract = "${contractId}"
-
-    export const factoryContract = "${factory.address}"
+    fs.writeFileSync('./contracts-addresses.tsx', `
+    export const projectId = "${projectId}"
     export const sharesContract = "${ contracts.sharesContract}"
     export const CreditContract = "${ contracts.creditContract}"
     export const minterContract = "${contracts.minterContract}"
