@@ -1,15 +1,18 @@
-import hre from "hardhat";
+import hre, { ethers } from "hardhat";
 import fs from 'fs';
 
-async function main() {
-  const NFTMarketplace = await hre.ethers.getContractFactory("NFTMarketplace");
-  const nftMarketplace = await NFTMarketplace.deploy();
-  await nftMarketplace.deployed();
-  console.log("nftMarketplace deployed to:", nftMarketplace.address);
 
-  fs.writeFileSync('./currentAddress.tsx', `
-  export const marketplaceAddress = "${nftMarketplace.address}"
+async function main() {
+  const FactoryContract = await hre.ethers.getContractFactory("factoryContract");
+  const factoryContract = await FactoryContract.deploy();
+  await factoryContract.deployed();
+  console.log("factoryContract deployed to:", factoryContract.address);
+
+  fs.writeFileSync("./factroyContractAddress.tsx", `
+  export const factoryContract = "${factoryContract.address}"
+
   `)
+
 }
 
 main()
