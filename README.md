@@ -29,7 +29,7 @@
 ### Clone Repo
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/your-dapp.git
+git clone https://github.com/Nameer-Alkhayyat/axon-dapp.git
 
 # For smart contracts development, in the root folder:
 npm install
@@ -40,7 +40,11 @@ npm install
 ```
 ## Software Modelling and Design Patterns
 
-Please find all the relevant information about Software Modelling and Design Patterns in this [Drive File](https://drive.google.com/file/d/1Rsu-sjnc8A4TrsDYZGQ9UoHtas3sgVs2/view?usp=sharing)
+### Class DigramUML
+![alt text](classDigramUML.png)
+
+### Sequence Digram
+![alt text](sequenceDigram.png)
 
 
 ## Deployment
